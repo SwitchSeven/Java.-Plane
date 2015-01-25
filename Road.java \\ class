@@ -1,0 +1,121 @@
+
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.Timer;
+import java.awt.event.*;
+import java.util.*;
+
+public class Road extends JPanel implements ActionListener, Runnable
+ {
+     Timer timer = new Timer(20, this);
+
+     Image roadImg = new ImageIcon("res/doroga.png").getImage();
+
+     Player player = new Player();
+
+     Thread enemiesFactory = new Thread(this);
+
+     java.util.List<Enemy> enemies = new ArrayList<Enemy>();
+
+
+     public Road()
+     {
+         timer.start();
+         enemiesFactory.start();
+         addKeyListener(new MyKeyAdapter());
+         setFocusable(true);
+     }
+
+     private class MyKeyAdapter extends KeyAdapter
+     {
+         public void keyPressed(KeyEvent e)
+         {
+             player.keyPressed(e);
+         }
+         public void keyReleased(KeyEvent e)
+         {
+             player.keyReleased(e);
+         }
+     }
+
+    public void paint(Graphics drawImg)
+    {
+        drawImg = (Graphics2D) drawImg;
+        drawImg.drawImage(roadImg, player.screen, 0, null);
+        drawImg.drawImage(roadImg, player.layers, 0, null);
+        drawImg.drawImage(player.carImg, player.x, player.y, null);
+
+        Font font = new Font("Arial", Font.ITALIC, 20);
+
+        drawImg.setFont(font);
+
+        double speed = (80/player.MAX_SPEED) * player.speed;
+        drawImg.drawString("Speed: " + speed + " km/h", 100, 30);
+        double left = (100000 - player.way)/2;
+        drawImg.drawString("Left - " + left + " m", 100, 70);
+
+        Iterator<Enemy> i = enemies.iterator();
+        while(i.hasNext())
+        {
+            Enemy e = i.next();
+            if(e.x >=2400 || e.x <= -2400)
+            {
+                i.remove();
+            } else {
+                e.move();
+                drawImg.drawImage(e.imgEnemy, e.x, e.y, null);
+            }
+        }
+    }
+
+    public void actionPerformed(ActionEvent e)
+    {
+        player.move();
+        repaint();
+        testCollisionWithEnemies();
+        testWin();
+    }
+
+     private void testWin()
+     {
+         if (player.way > 100000)
+         {
+             JOptionPane.showMessageDialog(null, "                              Egor win!");
+             System.exit(1);
+         }
+     }
+
+     private void testCollisionWithEnemies()
+     {
+         Iterator<Enemy> i = enemies.iterator();
+         while(i.hasNext())
+         {
+             Enemy e = i.next();
+             if(player.getRect().intersects(e.getRect()))
+             {
+                 JOptionPane.showMessageDialog(null, "               Egor lose. ");
+                 //System.exit(1);
+
+             }
+         }
+     }
+
+
+     @Override
+     public void run()
+     {
+         while (true)
+         {
+             Random rand = new Random();
+             try {
+                 Thread.sleep(rand.nextInt(2000));
+                 enemies.add(new Enemy(1550, rand.nextInt(700), rand.nextInt(5), this));
+             }
+             catch(InterruptedException e)
+             {
+                 e.printStackTrace();
+             }
+         }
+     }
+
+}
