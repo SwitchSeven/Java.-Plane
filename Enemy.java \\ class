@@ -1,0 +1,31 @@
+import java.awt.*;
+import javax.swing.*;
+
+public class Enemy {
+
+    int x;
+    int y;
+    int speed;
+
+    Road road;
+
+    Image imgEnemy = new ImageIcon("res/Enemey.png").getImage();
+
+    public Rectangle getRect()
+    {
+        return new Rectangle(x, y, 45, 160);
+    }
+
+    public Enemy(int x, int y, int speed, Road road)
+    {
+        this.x = x;
+        this.y = y;
+        this.speed = speed;
+        this.road = road;
+    }
+
+    public void move()
+    {
+        x = x - road.player.speed + speed;
+    }
+}
