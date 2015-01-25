@@ -1,0 +1,19 @@
+# Java.-Plane
+
+import javax.swing.*;
+
+public class Main {
+
+    public static void main(String[]args)
+    {
+        JFrame jf = new JFrame();
+        jf.add(new Road());
+        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jf.setLocation(75, 100);
+        jf.setResizable(false);
+        jf.setTitle("Egor-plane");
+        jf.setSize(1550, 828);
+        jf.setVisible(true);
+
+    }
+}
