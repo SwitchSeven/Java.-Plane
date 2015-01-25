@@ -1,0 +1,99 @@
+# Java.-Plane
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Player {
+
+    Image carImgC = new ImageIcon("res/Player.png").getImage();
+    Image carImg = carImgC;
+    Image carImgHight = new ImageIcon("res/Player_Left.png").getImage();
+    Image carImgDown = new ImageIcon("res/Player_Right.png").getImage();
+
+
+    int x = 100;
+    int y = 350;
+    int dy = 0;
+
+    public static final int MAX_SPEED = 40;
+    public static final int MAX_TOP = 10;
+    public static final int MAX_BOTTOM = 650;
+    public static final int MIN_SPEED = 6;
+
+    public Rectangle getRect()
+    {
+        return new Rectangle(x, y, 162, 90);
+    }
+
+    int speed = 3;
+    int acceleration = 0;
+    int way = 0;
+
+    int screen = 0;
+    int layers = 3200;
+
+    public void move()
+    {
+        way += speed;
+        speed += acceleration;
+
+        if (speed <= 0) speed = 0;
+        if (speed >= MAX_SPEED) speed = MAX_SPEED;
+        if (speed <= MIN_SPEED) speed = MIN_SPEED;
+
+        y -= dy;
+
+        if (y<= MAX_TOP) y = MAX_TOP;
+        if (y>= MAX_BOTTOM) y = MAX_BOTTOM;
+        if (layers - speed <= 0 )
+        {
+            screen = 0;
+            layers = 3200;
+        }
+        else
+        {
+            screen -= speed;
+            layers -= speed;
+        }
+    }
+
+    public void keyPressed(KeyEvent e)
+    {
+        int key = e.getKeyCode();
+        if (key == KeyEvent.VK_RIGHT)
+        {
+            speed += 1;
+        }
+        if (key == KeyEvent.VK_LEFT)
+        {
+            speed += -1;
+        }
+        if (key == KeyEvent.VK_DOWN)
+        {
+            dy = -10;
+            carImg = carImgDown;
+        }
+        if (key == KeyEvent.VK_UP)
+        {
+            dy = 10;
+            carImg = carImgHight;
+        }
+
+    }
+
+    public void keyReleased(KeyEvent e)
+    {
+        int key = e.getKeyCode();
+        if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_LEFT)
+        {
+            speed = 0;
+        }
+        if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN)
+        {
+            dy = 0;
+            carImg = carImgC;
+        }
+    }
+
+}
